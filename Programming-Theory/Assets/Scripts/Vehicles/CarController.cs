@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using TMPro;
 
 public abstract class CarController : MonoBehaviour {
+
+
+	
 	private enum SpeedUnit { Imperial, Metric }
 	protected enum WheelType { FrontLeft, FrontRight, RearLeft, RearRight }
 
@@ -40,10 +43,12 @@ public abstract class CarController : MonoBehaviour {
 	[SerializeField] private Transform _centerOfMass;
 	[SerializeField] private ParticleSystem _tireSmoke;
 	[SerializeField] private Wheel[] _wheels = new Wheel[4];
-	[SerializeField] private float _maxTorque = 2000f, _maxBrakeTorque = 500f, _maxSteerAngle = 30f;
+	[SerializeField] private float _maxTorque = 1800f, _maxBrakeTorque = 500f, _maxSteerAngle = 30f;
 	[SerializeField] private float _downForce = 100f;
 	[SerializeField] private SpeedUnit _speedUnit;
-	[SerializeField] private float _topSpeed = 140;
+	[SerializeField] private float _topSpeed = 100;
+	private float _torquePenaltyMultiplier = 1f;
+	public bool IsPenalized { get; private set; }
 
 	protected float CurrentSpeed { // ENCAPSULATION
 		get {
@@ -204,11 +209,26 @@ public abstract class CarController : MonoBehaviour {
 		if (!IsHandBraking) {
 			wheel.collider.brakeTorque = 0f;
 
-			if (MotorTorqueDirection > 0f) // Accelerating
-				wheel.collider.motorTorque = MotorTorqueDirection * _maxTorque / 4f;
-			else if (MotorTorqueDirection < 0f) // Deccelerating
-				wheel.collider.motorTorque = MotorTorqueDirection * _maxBrakeTorque / 40f;
-			else {
+			if (MotorTorqueDirection > 0f) { // Accelerating
+				wheel.collider.brakeTorque = 0f;
+				wheel.collider.motorTorque = MotorTorqueDirection * _maxTorque / 4f * _torquePenaltyMultiplier;
+			}
+			else if (MotorTorqueDirection < 0f) {
+				wheel.collider.motorTorque = 0f;
+
+				bool movingForward = Vector3.Dot(_rigidbody.velocity, transform.forward) > 0.5f;
+
+				if (movingForward) {
+					// Braking — apply actual brake torque to all wheels
+					wheel.collider.brakeTorque = _maxBrakeTorque * 30;
+				} else {
+					// Already stopped or reversing — apply reverse motor torque
+					wheel.collider.brakeTorque = 0f;
+					wheel.collider.motorTorque = MotorTorqueDirection * _maxTorque / 4f * _torquePenaltyMultiplier;
+				}
+			}
+			else { // No input — coast with rear drag
+				wheel.collider.motorTorque = 0f;
 				if (CheckWheelType(wheel, "rear"))
 					wheel.collider.brakeTorque = _maxBrakeTorque * 1000f;
 			}
@@ -255,4 +275,23 @@ public abstract class CarController : MonoBehaviour {
 		_speedUnitText = GameObject.Find("Speed Unit Text").GetComponent<TMP_Text>();
 		_speedometerPointer = GameObject.Find("Speedometer Pointer").transform;
 	}
+
+	// NEW
+	public void ApplySpeedPenalty(float duration, float multiplier = 0.5f) {
+		_rigidbody.velocity *= 0.5f; // Immediately cut current speed in half
+		StartCoroutine(SpeedPenaltyCoroutine(duration, multiplier));
+	}
+
+	private IEnumerator SpeedPenaltyCoroutine(float duration, float multiplier) {
+		IsPenalized = true;
+		_torquePenaltyMultiplier = multiplier;
+		yield return new WaitForSeconds(duration);
+		_torquePenaltyMultiplier = 1f;
+		IsPenalized = false;
+	}
+
+
+
 }
+
+

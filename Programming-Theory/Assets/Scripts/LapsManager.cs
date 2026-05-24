@@ -15,7 +15,7 @@ public class LapsManager : MonoBehaviour {
 	private GameObject _nextCheckpoint;
 
 	[HideInInspector] public static GameObject LastCheckpoint;
-
+	private int _ringPassedCount = 0;
 	private float _timer = 0f;
 	private System.TimeSpan _currentTime;
 	private System.TimeSpan _totalTime;
@@ -90,6 +90,12 @@ public class LapsManager : MonoBehaviour {
 
 			_currentList.RemoveAt(0);
 			_currentList.TrimExcess();
+
+			_ringPassedCount++;
+			if (_ringPassedCount % 4 == 0) {
+				MathQuestionManager.Instance.TriggerQuestion();
+			}
+
 			AddNextCheckpoint(_currentList);
 		}
 	}
