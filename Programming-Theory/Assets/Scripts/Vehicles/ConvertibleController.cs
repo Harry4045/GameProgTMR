@@ -20,8 +20,9 @@ public class ConvertibleController : CarController { // INHERITANCE
 			float motor = Input.GetAxis("Vertical");
 			float steering = Input.GetAxis("Horizontal");
 			bool handBrake = Input.GetButton("Jump");
+			bool hardBrake = Input.GetKey(KeyCode.Space);
 
-			Move(motor, steering, handBrake);
+			Move(motor, steering, handBrake, hardBrake);
 		}
 	}
 }

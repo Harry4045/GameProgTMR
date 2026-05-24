@@ -31,7 +31,7 @@ public abstract class CarController : MonoBehaviour {
 	[HideInInspector] public float MotorTorqueDirection { get; protected set; } // ENCAPSULATION
  	[HideInInspector] public float SteerAngle { get; protected set; } // ENCAPSULATION
  	[HideInInspector] public bool IsHandBraking { get; protected set; } // ENCAPSULATION
-
+	[HideInInspector] public bool IsHardBraking { get; protected set; } // ENCAPSULATION
 	[HideInInspector] protected float MaxSteerAngle { get; set; } // ENCAPSULATION
 	[HideInInspector] protected bool AreWheelsOnGround { get; set; } // ENCAPSULATION
 
@@ -117,11 +117,11 @@ public abstract class CarController : MonoBehaviour {
 		wheel.mesh.transform.rotation = rotation;
 	}
 
-	protected virtual void Move(float motorInput, float steerInput, bool handBrakeInput) { // ABSTRACTION
+	protected virtual void Move(float motorInput, float steerInput, bool handBrakeInput, bool hardBrakeInput) { // ABSTRACTION
 		MotorTorqueDirection = motorInput;
 		SteerAngle = steerInput * MaxSteerAngle;
 		IsHandBraking = handBrakeInput;
-
+		IsHardBraking = hardBrakeInput;
 		HandleMovement();
 	}
 
@@ -220,17 +220,28 @@ public abstract class CarController : MonoBehaviour {
 
 				if (movingForward) {
 					// Braking — apply actual brake torque to all wheels
-					wheel.collider.brakeTorque = _maxBrakeTorque * 30;
+					if (movingForward) {
+						// S key — strong brake, or Space/hardbrake — instant stop on all 4 wheels
+						float brakePower = IsHardBraking ? _maxBrakeTorque * 500f : _maxBrakeTorque * 20f;
+						wheel.collider.brakeTorque = brakePower;
+
+						// Also bleed velocity directly for a snappier feel
+						if (IsHardBraking)
+							_rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity, Vector3.zero, Time.deltaTime * 10f);
+					}
 				} else {
 					// Already stopped or reversing — apply reverse motor torque
 					wheel.collider.brakeTorque = 0f;
 					wheel.collider.motorTorque = MotorTorqueDirection * _maxTorque / 4f * _torquePenaltyMultiplier;
 				}
 			}
-			else { // No input — coast with rear drag
+			else {
 				wheel.collider.motorTorque = 0f;
-				if (CheckWheelType(wheel, "rear"))
-					wheel.collider.brakeTorque = _maxBrakeTorque * 1000f;
+				// Hard brake (Space) locks all wheels; handbrake only rear
+				if (IsHardBraking)
+					wheel.collider.brakeTorque = _maxBrakeTorque * 10000f;        // all 4
+				else if (CheckWheelType(wheel, "rear"))
+					wheel.collider.brakeTorque = _maxBrakeTorque * 10000f;        // rear only
 			}
 		} else {
 			wheel.collider.motorTorque = 0f;

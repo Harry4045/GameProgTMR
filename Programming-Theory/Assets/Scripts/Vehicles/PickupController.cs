@@ -20,8 +20,11 @@ public class PickupController : CarController { // INHERITANCE
 			float motor = Input.GetAxis("Vertical");
 			float steering = Input.GetAxis("Horizontal");
 			bool handBrake = Input.GetButton("Jump");
+			bool hardBrake = Input.GetKey(KeyCode.Space)
+						|| Input.GetKey(KeyCode.S)
+						|| Input.GetKey(KeyCode.DownArrow);
 
-			Move(motor, steering, handBrake);
+			Move(motor, steering, handBrake, hardBrake);
 		}
 	}
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 674241908}
-  m_IndirectSpecularColor: {r: 0.44755334, g: 0.49751472, b: 0.57533056, a: 1}
+  m_IndirectSpecularColor: {r: 0.44755334, g: 0.49751472, b: 0.5753305, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -38157,6 +38157,46 @@ PrefabInstance:
     - target: {fileID: 2438829233439255329, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
       propertyPath: m_Name
       value: Convertible
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514047458847658280, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
+      propertyPath: m_SuspensionSpring.damper
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514047458847658280, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
+      propertyPath: m_SuspensionSpring.spring
+      value: 35000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514047458847658280, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
+      propertyPath: m_ForwardFriction.m_Stiffness
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514047458847658280, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
+      propertyPath: m_SidewaysFriction.m_Stiffness
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514047458977157312, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
+      propertyPath: m_ForwardFriction.m_Stiffness
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514047458977157312, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
+      propertyPath: m_SidewaysFriction.m_Stiffness
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514047460466270666, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
+      propertyPath: m_ForwardFriction.m_Stiffness
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514047460466270666, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
+      propertyPath: m_SidewaysFriction.m_Stiffness
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514047460694050538, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
+      propertyPath: m_ForwardFriction.m_Stiffness
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514047460694050538, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}
+      propertyPath: m_SidewaysFriction.m_Stiffness
+      value: 2.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07704519717db55478fc87f6d4f6f32f, type: 3}

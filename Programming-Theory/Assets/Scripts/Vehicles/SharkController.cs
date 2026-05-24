@@ -9,11 +9,11 @@ public class SharkController : CarController { // INHERITANCE
 
 	private bool _isLowerPartVisible = true;
 
-	protected override void Move(float motorInput, float steerInput, bool handBrakeInput) { // POLYMORPHISM
+	protected override void Move(float motorInput, float steerInput, bool handBrakeInput, bool hardBrakeInput) { // POLYMORPHISM
 		MotorTorqueDirection = motorInput;
 		SteerAngle = steerInput * MaxSteerAngle;
 		IsHandBraking = handBrakeInput;
-
+		IsHardBraking = hardBrakeInput;
 		if (_isLowerPartVisible)
 			HandleMovement();
 		else
@@ -64,8 +64,11 @@ public class SharkController : CarController { // INHERITANCE
 			float motor = Input.GetAxis("Vertical");
 			float steering = Input.GetAxis("Horizontal");
 			bool handBrake = Input.GetButton("Jump");
+			bool hardBrake = Input.GetKey(KeyCode.Space)
+						|| Input.GetKey(KeyCode.S)
+						|| Input.GetKey(KeyCode.DownArrow);
 
-			Move(motor, steering, handBrake);
+			Move(motor, steering, handBrake, hardBrake);
 		}
 	}
 }
