@@ -282,9 +282,13 @@ public abstract class CarController : MonoBehaviour {
 	}
 
 	private void Awake() {
-		_speedText = GameObject.Find("Speed Text").GetComponent<TMP_Text>();
-		_speedUnitText = GameObject.Find("Speed Unit Text").GetComponent<TMP_Text>();
-		_speedometerPointer = GameObject.Find("Speedometer Pointer").transform;
+		GameObject speedObj    = GameObject.Find("Speed Text");
+		GameObject unitObj     = GameObject.Find("Speed Unit Text");
+		GameObject pointerObj  = GameObject.Find("Speedometer Pointer");
+
+		if (speedObj != null)   _speedText          = speedObj.GetComponent<TMP_Text>();
+		if (unitObj != null)    _speedUnitText       = unitObj.GetComponent<TMP_Text>();
+		if (pointerObj != null) _speedometerPointer  = pointerObj.transform;
 	}
 
 	// NEW

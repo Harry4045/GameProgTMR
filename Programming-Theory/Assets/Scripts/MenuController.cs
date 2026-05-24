@@ -84,6 +84,7 @@ public class MenuController : MonoBehaviour {
 			return;
 
 		GameManager.IsGameOver = false;
+    	GameManager.IsGameStarted = false;
 
 		StartCoroutine(ChangeScene());
 	}
